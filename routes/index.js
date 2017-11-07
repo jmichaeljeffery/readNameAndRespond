@@ -22,4 +22,7 @@ router.post('/readNameAndRespond', function(req, res, next) {
     var value_name = req.body.name;  //retrieve the data associated with name
     res.send("hello " + value_name);
 });
+router.get('/', function(req, res, next) {
+    res.render('index', { title: 'Express' });
+});
 module.exports = router;
