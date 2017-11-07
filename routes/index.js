@@ -19,3 +19,5 @@ router.get('/read/:name', function(req, res, next) {
     var value_name = req.params.name;  //retrieve the data associated with name
     res.send("hello " + value_name);
 })
+
+module.exports = router;
