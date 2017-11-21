@@ -24,6 +24,7 @@ router.post('/readNameAndRespond', function(req, res, next) {
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
+
 router.get('/getAllOrders', controllerMongoCollection.getAllOrders);
 router.post('/storeData', controllerDatabase.storeData);
 
