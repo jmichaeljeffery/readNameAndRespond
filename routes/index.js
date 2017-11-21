@@ -3,6 +3,7 @@ var router = express.Router();
 
 var controllerMain = require('../controllers/main')
 var controllerMongoCollection = require('../controllers/database')
+var controllerDatabase = require('../controllers/database/storeData')
 //to process data sent in on request need body-parser module
 
 var bodyParser = require('body-parser');
@@ -12,9 +13,18 @@ var querystring = require('querystring'); //for use in GET Query string of form 
 router.use(bodyParser.json()); // for parsing application/json
 router.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencode
 //#########################################
+router.post('/readNameAndRespond', function(req, res, next) {
 
+    //expecting data variable called name --retrieve value using body-parser
+    var body = JSON.stringify(req.body);  //if wanted entire body as JSON
+    var params = JSON.stringify(req.params);//if wanted parameters
+    var value_name = req.body.name;  //retrieve the data associated with name
+    res.send("hello " + value_name);
+});
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 router.get('/getAllOrders', controllerMongoCollection.getAllOrders);
+router.post('/storeData', controllerDatabase.storeData);
+
 module.exports = router;
