@@ -89,12 +89,9 @@ module.exports.storeData = function (req, res, next) {
         ORDERS.insertOne(orderData, function (err, result) {
             if (err) throw err;
         })
-        ORDERS.find().toArray(function (err, docs) {
-            if(err) throw err;
 
-            response.render('storeData', {results: docs});
+            res.render('storeData', {results: docs});
 
-        });
 
 
         //Terminates the connection after everything is inserted
