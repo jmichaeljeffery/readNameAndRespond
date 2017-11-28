@@ -26,6 +26,7 @@ module.exports.storeData = function (req, res, next) {
         var customerID = Math.floor((Math.random() * 1000000000000) + 1);
         var billingID = Math.floor((Math.random() * 1000000000000) + 1);
         var shippingID = Math.floor((Math.random() * 1000000000000) + 1);
+        var ordersID = Math.floor((Math.random() * 1000000000000) + 1);
         //customer collection operation
         var CUSTOMERS = db.collection('CUSTOMERS');
         /*CUSTOMERS.deleteMany({}, function (err, result) {
@@ -33,14 +34,72 @@ module.exports.storeData = function (req, res, next) {
         });*/
         var customerdata = {
             _id: customerID,
-            FIRSTNAME: shipment_info['fname'],
-            LASTNAME: shipment_info['lname'],
-            STREET: shipment_info['add1'] + ' ' + shipment_info['add2'],
-            CITY: shipment_info['city'],
-            STATE: shipment_info['state'],
-            ZIP: shipment_info['zipcode'],
-            PHONE: shipment_info['phone']
+            FIRSTNAME: session_info['firstname'],
+            LASTNAME: session_info['lastname'],
+            STREET: session_info['address'] + ' ' + session_info['address2'],
+            CITY: session_info['city'],
+            STATE: session_info['state'],
+            ZIP: session_info['zipCode'],
+            PHONE: session_info['telephone']
         };
         CUSTOMERS.insertOne(customerdata, function (err, result) {
             if (err) throw err;
-        })})};
+        })
+        //customer collection operation
+        var CUSTOMERS = db.collection('CUSTOMERS');
+        /*CUSTOMERS.deleteMany({}, function (err, result) {
+        if (err) throw err;
+        });*/
+
+        // BILLING
+        var billingdata = {
+            _id: billingID,
+            CREDITCARDDATE: session_card['date'],
+            CREDITCARDEXP: session_card['date'],
+            CREDITCARDNUM: session_card['number'],
+            CREDITCARDSECURITYNUM: 123,
+            CREDITCARDTYPE: session_card['type'],
+            CUSTOMERID: customerID,
+            //////////
+        };
+        BILLING.insertOne(billingdata, function (err, result) {
+            if (err) throw err;
+        })
+        //SHIPPING DATA
+        var shippingData = {
+            _id: shippingID,
+            SHIPPING_STREET: session_info['address'] + ' ' + session_info['address2'],
+            SHIPPING_CITY: session_info['city'],
+            SHIPPING_STATE: session_info['state'],
+            SHIPPING_ZIP: session_info['zipCode']
+        };
+        SHIPPING.insertOne(shippingData, function (err, result) {
+            if (err) throw err;
+        })
+        //ORDER DATA
+        var orderData = {
+            _id: ordersID,
+            BILLING_ID: billingID,
+            CUSTOMER_ID: customerID,
+            SHIPPING_ID: shippingID,
+            DATE: session_card['date'],
+            ORDER_TOTAL: 1,
+            PRODUCT_VECTOR: session_cart
+        };
+        ORDERS.insertOne(orderData, function (err, result) {
+            if (err) throw err;
+        })
+        ORDERS.find().toArray(function (err, docs) {
+            if(err) throw err;
+
+            response.render('storeData', {results: docs});
+
+        });
+
+
+        //Terminates the connection after everything is inserted
+        db.close(function (err) {
+            if(err) throw err;
+        });
+    })
+};
