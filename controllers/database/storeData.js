@@ -10,6 +10,9 @@ var querystring = require('querystring'); //for use in GET Query string of form 
 router.use(bodyParser.json()); // for parsing application/json
 router.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencode
 
+
+
+
 module.exports.storeData = function (req, res, next) {
 
     mongodb.MongoClient.connect(mongoDBURI, function (err, db) {
@@ -35,15 +38,37 @@ module.exports.storeData = function (req, res, next) {
         /*CUSTOMERS.deleteMany({}, function (err, result) {
         if (err) throw err;
         });*/
+
+        //grabbing all the post data
+        var body = JSON.stringify(req.body);  //if wanted entire body as JSON
+        var params = JSON.stringify(req.params);//if wanted parameters
+        var value_firstname = req.body.firstname;
+        var value_lastname = req.body.lastname;
+        var value_street = req.body.street;
+        var value_city = req.body.city;
+        var value_state = req.body.state;
+        var value_zip = req.body.zip;
+        var value_phone = req.body.phone;
+        var value_creditcarddate = req.body.creditcarddate;
+        var value_creditcardexp = req.body.creditcardexp;
+        var value_creditcardsecuritynum = req.body.creditcardsecuritynum;
+        var value_creditcardnum = req.body.creditcardnum;
+        var value_creditcardtype = req.body.creditcardtype;
+        var value_shippingstreet = req.body.shipping_street;
+        var value_shippingcity = req.body.shipping_city;
+        var value_shippingstate = req.body.shipping_state;
+        var value_shippingzip = req.body.shipping_zip;
+        var value_orderDate = req.body.orderDate;
+
         var customerdata = {
             _id: customerID,
-            FIRSTNAME: session_info['firstname'],
-            LASTNAME: session_info['lastname'],
-            STREET: session_info['address'] + ' ' + session_info['address2'],
-            CITY: session_info['city'],
-            STATE: session_info['state'],
-            ZIP: session_info['zipCode'],
-            PHONE: session_info['telephone']
+            FIRSTNAME: value_firstname,
+            LASTNAME: value_lastname,
+            STREET: value_street,
+            CITY: value_city,
+            STATE: value_state,
+            ZIP: value_zip,
+            PHONE: value_phone
         };
         CUSTOMERS.insertOne(customerdata, function (err, result) {
             if (err) throw err;
@@ -54,11 +79,11 @@ module.exports.storeData = function (req, res, next) {
         // BILLING
         var billingdata = {
             _id: billingID,
-            CREDITCARDDATE: session_card['date'],
-            CREDITCARDEXP: session_card['date'],
-            CREDITCARDNUM: session_card['number'],
-            CREDITCARDSECURITYNUM: "123",
-            CREDITCARDTYPE: session_card['type'],
+            CREDITCARDDATE: value_creditcarddate,
+            CREDITCARDEXP: value_creditcardexp,
+            CREDITCARDNUM: value_creditcardnum,
+            CREDITCARDSECURITYNUM: value_creditcardsecuritynum,
+            CREDITCARDTYPE: value_creditcardtype,
             CUSTOMERID: customerID,
             //////////
         };
@@ -68,10 +93,10 @@ module.exports.storeData = function (req, res, next) {
         //SHIPPING DATA
         var shippingData = {
             _id: shippingID,
-            SHIPPING_STREET: session_info['address'] + ' ' + session_info['address2'],
-            SHIPPING_CITY: session_info['city'],
-            SHIPPING_STATE: session_info['state'],
-            SHIPPING_ZIP: session_info['zipCode']
+            SHIPPING_STREET: value_shippingstreet,
+            SHIPPING_CITY: value_shippingcity,
+            SHIPPING_STATE: value_shippingstate,
+            SHIPPING_ZIP: value_shippingzip
         };
         SHIPPING.insertOne(shippingData, function (err, result) {
             if (err) throw err;
@@ -82,7 +107,7 @@ module.exports.storeData = function (req, res, next) {
             BILLING_ID: billingID,
             CUSTOMER_ID: customerID,
             SHIPPING_ID: shippingID,
-            DATE: session_card['date'],
+            DATE: value_creditcarddate,
             ORDER_TOTAL: 1,
             PRODUCT_VECTOR: session_cart
         };
@@ -98,3 +123,4 @@ module.exports.storeData = function (req, res, next) {
     })
 
 };
+module.exports = router;
