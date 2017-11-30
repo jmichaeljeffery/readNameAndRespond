@@ -29,6 +29,9 @@ module.exports.storeData = function (req, res, next) {
         var ordersID = Math.floor((Math.random() * 1000000000000) + 1);
         //customer collection operation
         var CUSTOMERS = db.collection('CUSTOMERS');
+        var BILLING = db.collection('BILLING');
+        var SHIPPING = db.collection('SHIPPING');
+        var ORDERS = db.collection('ORDERS');
         /*CUSTOMERS.deleteMany({}, function (err, result) {
         if (err) throw err;
         });*/
@@ -46,10 +49,7 @@ module.exports.storeData = function (req, res, next) {
             if (err) throw err;
         })
         //customer collection operation
-        var CUSTOMERS = db.collection('CUSTOMERS');
-        /*CUSTOMERS.deleteMany({}, function (err, result) {
-        if (err) throw err;
-        });*/
+
 
         // BILLING
         var billingdata = {
@@ -57,7 +57,7 @@ module.exports.storeData = function (req, res, next) {
             CREDITCARDDATE: session_card['date'],
             CREDITCARDEXP: session_card['date'],
             CREDITCARDNUM: session_card['number'],
-            CREDITCARDSECURITYNUM: 123,
+            CREDITCARDSECURITYNUM: "123",
             CREDITCARDTYPE: session_card['type'],
             CUSTOMERID: customerID,
             //////////
@@ -89,14 +89,12 @@ module.exports.storeData = function (req, res, next) {
         ORDERS.insertOne(orderData, function (err, result) {
             if (err) throw err;
         })
-
-            res.render('storeData', {results: docs});
-
-
+        response.render('storeData', {title: "Order Successful!"});
 
         //Terminates the connection after everything is inserted
         db.close(function (err) {
             if(err) throw err;
         });
     })
+
 };
